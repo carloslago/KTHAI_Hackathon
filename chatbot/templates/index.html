@@ -1,0 +1,37 @@
+{% extends "base_site.html" %}
+{% load i18n %}
+{% load static %}
+
+
+{% block title %}{% trans "Home" %}{% endblock title %}
+
+{% block stylesheets %}
+    {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+    <div class="right_col" role="main" style="min-height: 936px">
+        <div class="page-holder w-100 d-flex flex-wrap">
+            <div class="container-fluid px-xl-5">
+                <section class="py-5">
+                    <div class="row">
+                        <h1> The Project</h1>
+{#                        <p>#}
+{#                            This project is oriented towards#}
+{#                        </p>#}
+{#                        <h1> Guide </h1>#}
+{#                        <p>#}
+{##}
+{##}
+{#                        </p>#}
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+
+    {{ block.super }}
+{% endblock javascripts %}

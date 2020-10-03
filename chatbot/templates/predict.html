@@ -1,0 +1,64 @@
+{% extends "base_site.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Predict" %}{% endblock title %}
+
+{% block stylesheets %}
+    {{ block.super }}
+    <link href="/static/css/magnific-popup.css" rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="page-holder w-100 d-flex flex-wrap">
+        <div class="container-fluid px-xl-5">
+          <section class="py-5">
+            <div class="row">
+                  <div class="col-lg-6 mb-5">
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="h6 text-uppercase mb-0">{% trans "Message box" %}</h3>
+                      </div>
+                      <div class="card-body">
+                        <p>{% trans "Say whatever you like." %}</p>
+                        <form action="{% url "predict" %}" method="POST">
+                            <div class="form-group">
+                                  <label class="form-control-label text-uppercase"
+                                         for="id_message">{% trans 'Input your message' %}
+                                     </label>
+                                    <div>
+                                        <input id="id_message" type="text" name="message"/>
+                                    </div>
+                              </div>
+                          <div class="form-group">
+                            <button type="submit" class="btn btn-primary" name="action" value="Predict">Generate</button>
+                            </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                <div class="col-lg-6 mb-4" style="visibility: {{visibility}}">
+                <div class="card">
+                  <div class="card-header">
+                    <h6 class="text-uppercase mb-0">{% trans "Results" %}</h6>
+                  </div>
+                  <div class="card-body">
+                    <p style="color: red">Input message - {{ question }}</p>
+                      {% for i in response %}
+                        <p>{{ i }}</p>
+                      {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="/static/js/jquery.magnific-popup.js"></script>
+
+    {{ block.super }}
+{% endblock javascripts %}

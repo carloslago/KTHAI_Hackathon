@@ -4,12 +4,13 @@ import numpy as np
 import pandas as pd
 from keras.models import load_model
 import random
+import os
 
 latent_dim = 256  # Latent dimensionality of the encoding space.
 firs_char = ""
 max_length = 50
 
-data = pd.read_csv('data/train-balanced-sarcasm.csv')
+data = pd.read_csv(os.path.join('bazinga/static/train-balanced-sarcasm.csv'))
 data.dropna(subset=['comment'], inplace=True)
 data.dropna(subset=['parent_comment'], inplace=True)
 data = data[data['label'] == 1]
@@ -53,8 +54,8 @@ for i, (input_text, target_text) in enumerate(zip(input_texts, target_texts)):
     decoder_target_data[i, t:, token_index[' ']] = 1.
 
 
-# Run training
-model = load_model('PLEASEWORK3.h5')
+# Run trainingos
+model = load_model(os.path.join('bazinga/static/PLEASEWORK3.h5'))
 model.compile(optimizer='rmsprop', loss='categorical_crossentropy',
               metrics=['accuracy'])
 
@@ -132,23 +133,12 @@ def decode_sequence(input_seq):
 
     return decoded_sentence
 
-while True:
-    print('-')
-    text = input("Write your input: ")
+def predict_input(text):
     input_seq = np.zeros((1, max_encoder_seq_length, num_encoder_tokens), dtype='float32')
     for t, char in enumerate(text[:max_encoder_seq_length]):
         input_seq[0, t, token_index[char]] = 1.
-    print('Input sentence:', text)
+    choices = []
     for i in range(3):
         decoded_sentence = decode_sequence(input_seq)
-        print('Decoded sentence %d:' %i, firs_char+decoded_sentence)
-
-# for seq_index in range(100):
-#     # Take one sequence (part of the training set)
-#     # for trying out decoding.
-#     input_seq = encoder_input_data[seq_index: seq_index + 1]
-#     decoded_sentence = decode_sequence(input_seq)
-#     print('-')
-#     print('Input sentence:', input_texts[seq_index])
-#     print('Decoded sentence:', decoded_sentence)
-#     exit()
+        choices.append(firs_char+decoded_sentence)
+    return choices

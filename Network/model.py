@@ -4,15 +4,17 @@ import numpy as np
 import pandas as pd
 from keras.models import load_model
 
-batch_size = 128  # Batch size for training.
-epochs = 5  # Number of epochs to train for.
+batch_size = 256  # Batch size for training.
+epochs = 35  # Number of epochs to train for.
 latent_dim = 256  # Latent dimensionality of the encoding space.
+
+max_length = 50
 
 data = pd.read_csv('data/train-balanced-sarcasm.csv')
 data.dropna(subset=['comment'], inplace=True)
 data.dropna(subset=['parent_comment'], inplace=True)
 data = data[data['label'] == 1]
-mask = (data['comment'].str.len() <= 50) & (data['parent_comment'].str.len() <= 50)
+mask = (data['comment'].str.len() <= max_length) & (data['parent_comment'].str.len() <= max_length)
 data = data.loc[mask]
 
 num_samples = len(data)  # Number of samples to train on.
@@ -24,15 +26,12 @@ merged = ' '.join(full_comment.values)
 raw_text = merged
 chars = sorted(list(set(raw_text)))
 
-char_parent = sorted(list(set(list(parent_comments))))
-char_comment = sorted(list(set(comments)))
-
 input_texts = sorted(list(parent_comments))
 target_texts = sorted(list(comments))
 num_encoder_tokens = len(chars)
 num_decoder_tokens = len(chars)
-max_encoder_seq_length = 50
-max_decoder_seq_length = 50
+max_encoder_seq_length = max_length
+max_decoder_seq_length = max_length
 
 token_index = dict([(char, i) for i, char in enumerate(chars)])
 # input_token_index = dict(
@@ -76,12 +75,12 @@ decoder_inputs = Input(shape=(None, num_decoder_tokens))
 # return states in the training model, but we will use them in inference.
 decoder_lstm = LSTM(latent_dim, return_sequences=True, return_state=True)
 decoder_outputs, _, _ = decoder_lstm(decoder_inputs,initial_state=encoder_states)
-decoder_dense1 = Dense(256, activation='relu')
-decoder_outputs = decoder_dense1(decoder_outputs)
+# decoder_dense1 = Dense(256, activation='relu')
+# decoder_outputs = decoder_dense1(decoder_outputs)
+# decoder_batch = BatchNormalization()
+# decoder_outputs = decoder_batch(decoder_outputs)
 decoder_dense2 = Dense(num_decoder_tokens, activation='softmax')
 decoder_outputs = decoder_dense2(decoder_outputs)
-decoder_batch = BatchNormalization(0.5)
-decoder_outputs = decoder_batch(decoder_outputs)
 
 model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
 print(model.summary())
@@ -94,4 +93,4 @@ model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
           epochs=epochs,
           validation_split=0.2, verbose=2)
 # Save model
-model.save('lstm256_dense.h5')
+model.save('PLEASEWORK3.h5')

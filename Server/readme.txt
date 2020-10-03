@@ -1,1 +1,0 @@
-# KTHAI_Hackathon
